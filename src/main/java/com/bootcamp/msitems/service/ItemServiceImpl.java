@@ -24,7 +24,9 @@ public class ItemServiceImpl implements IItemService{
     public Flux<Item> findAll() {
         List<Product> products = Arrays.asList(restClient.getForObject("http://localhost:3000/product", Product[].class));
 
-        return Flux.fromIterable(products.stream().map(p -> new Item(p, 1)).collect(Collectors.toList()));
+        List<Item> a = products.stream().map(p -> new Item(p, 1)).collect(Collectors.toList());
+
+        return Flux.fromIterable(a);
     }
 
     @Override
@@ -32,7 +34,7 @@ public class ItemServiceImpl implements IItemService{
         Map<String, String> pathVariables = new HashMap<>();
         pathVariables.put("id", id.toString());
 
-        Product product = restClient.getForObject("http://localhost:3000/product", Product.class, pathVariables);
+        Product product = restClient.getForObject("http://localhost:3000/product/{id}", Product.class, pathVariables);
 
         return Mono.just(new Item(product, quantity));
     }
